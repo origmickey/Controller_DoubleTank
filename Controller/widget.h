@@ -6,6 +6,8 @@
 
 #include "client.h"
 
+#include "data_processor.h"
+
 
 
 QT_BEGIN_NAMESPACE
@@ -23,6 +25,8 @@ public:
     void Init();
 
     Client * client;
+
+    data_processor * msg_processor;
 
 private slots:
     void on_connectserver_clicked();

@@ -1,6 +1,8 @@
 #include "widget.h"
 #include "ui_widget.h"
 
+#include "JQChecksum.h"
+
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::Widget)
@@ -14,11 +16,16 @@ Widget::~Widget()
 {
     delete ui;
     delete client;
+
+    delete msg_processor;
 }
 
 void Widget::Init()
 {
     client = new Client;
+
+    msg_processor = new data_processor;
+
 }
 
 void Widget::on_connectserver_clicked()
@@ -28,6 +35,17 @@ void Widget::on_connectserver_clicked()
 
 void Widget::on_sendmsg_clicked()
 {
-    char * msg = "hi! it is client request!";
+
+    int u=10;
+
+    QByteArray data2send = QByteArray::number(u,16);
+
+    QByteArray id=QByteArray::fromHex("01");
+
+
+    QByteArray  msg = msg_processor->packer(data2send,id);
+
     client->SendMsg(msg);
+
+
 }

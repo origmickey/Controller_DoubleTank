@@ -6,6 +6,8 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
 
+include($$PWD/Library/JQLibrary/JQLibrary.pri)
+
 # The following define makes your compiler emit warnings if you use
 # any Qt feature that has been marked deprecated (the exact warnings
 # depend on your compiler). Please consult the documentation of the
@@ -19,11 +21,13 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     client.cpp \
+    data_processor.cpp \
     main.cpp \
     widget.cpp
 
 HEADERS += \
     client.h \
+    data_processor.h \
     widget.h
 
 FORMS += \

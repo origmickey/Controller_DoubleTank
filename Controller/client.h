@@ -17,7 +17,9 @@ public:
 
     void Connect(QString addr,quint16 port);
 
-    void SendMsg(char* data);
+    void SendMsg(QByteArray data);
+
+
 
 public slots:
     void ReadMsg();

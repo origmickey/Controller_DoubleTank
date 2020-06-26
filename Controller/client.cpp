@@ -16,7 +16,7 @@ void Client::Connect(QString addr,quint16 port)
     this->connectToHost(addr,port);
 }
 
-void Client::SendMsg(char* data)
+void Client::SendMsg(QByteArray  data)
 {
     this->write(data);
 
