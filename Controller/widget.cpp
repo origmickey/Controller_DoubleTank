@@ -26,6 +26,15 @@ void Widget::Init()
 
     msg_processor = new data_processor;
 
+
+//    QByteArray head=QByteArray::fromHex("FFBE");
+//    QByteArray data("a");
+//    data=head+data;
+
+//    qDebug()<<data;
+
+//    qDebug()<<data.indexOf(head);
+
 }
 
 void Widget::on_connectserver_clicked()
