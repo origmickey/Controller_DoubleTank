@@ -46,7 +46,7 @@ private slots:
     void plot();
 
     //void deal_data(double value);
-    void read_input();
+    void read_input(double y);
     void SlotReadData(const QByteArray &data);
     void GetValidData(QByteArray id , QByteArray proccessed_data);
 
@@ -55,7 +55,7 @@ signals:
     void start_receive();
     void send_signal(QByteArray msg);
     void ProccessingCall(QByteArray data);
-    void read_signal();
+    void read_signal(double y);
 
 private:
     Ui::Widget *ui;

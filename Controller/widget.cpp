@@ -51,7 +51,7 @@ Widget::Widget(QWidget *parent)
     connect(msg_processor,SIGNAL(ValidDataReady(QByteArray,QByteArray)),this,SLOT(GetValidData(QByteArray,QByteArray)));
 
     //收到y后读取输入
-    connect(this,SIGNAL(read_signal()),this,SLOT(read_input()));
+    connect(this,SIGNAL(read_signal(double)),this,SLOT(read_input(double)));
 
 
 }
@@ -91,13 +91,13 @@ void Widget::on_sendmsg_clicked()     //启动发送
 {
 
 
-    int u = 0;
+    int u = 10;
 
     QByteArray data2send = QByteArray::number(u,16);
 
     //QByteArray id=QByteArray::fromHex("00");
 
-    int id = 0;
+    int id = 2;
 
     QByteArray  msg = msg_processor->packer(data2send,id);
 
@@ -126,27 +126,15 @@ void Widget::send_compute_res(double res)  //发送计算后的uk
 
 void Widget::plot() //绘图
 {
-    qreal x = y_current;
-    for (int i=0; i<m_data.size(); ++i)
-                m_data[i].setX(m_data.at(i).x() - 1);
-    m_data.append(QPointF(700,x));
-    m_data.removeFirst();
     m_series->replace(m_data);
 }
 
 
 
-//void Widget::deal_data(double value) //用于更新曲线坐标
-//{
-
-//}
-
-
-
-void Widget::read_input()  //读取输入框数
+void Widget::read_input(double y)  //读取输入框数
 {
     double input = ui->lineEdit->text().toDouble();
-    emit get_input(input,y_current);
+    emit get_input(input,y);
 }
 
 
@@ -176,7 +164,14 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
     qDebug()<<"real_yk is :"<< real_yk;
 
     y_current = real_yk;
+
+    //更新坐标点
+    qreal x = y_current;
+    for (int i=0; i<m_data.size(); ++i)
+                m_data[i].setX(m_data.at(i).x() - 1);
+    m_data.append(QPointF(700,x));
+    m_data.removeFirst();
     //发送信号，准备读取文本框
-    emit read_signal();
+    emit read_signal(y_current);
 
 }
