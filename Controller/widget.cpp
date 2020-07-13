@@ -11,17 +11,15 @@ Widget::Widget(QWidget *parent)
 
 
     //界面
-    m_series = new QLineSeries;
-    m_chart = new QChart;
-    m_chart->legend()->hide();
-    m_chart->addSeries(m_series);
-    m_chart->createDefaultAxes();
-    m_chart->setTitle("曲线图");
 
-    m_chart->axisX()->setRange(0,700);
-    m_chart->axisY()->setRange(-10,10);
+    m_chart = new Mychart;
 
-    ui->widget->setChart(m_chart);
+    //ui->widget->setChart(m_chart);
+    //m_chart2->addSeries(m_chart->m_series);
+
+    //connect(this,SIGNAL(read_signal(double)),m_chart,SLOT(get_height(double)));
+    //m_chart->moveToThread(&thread2);
+    //thread2.start();
 
 
     //模型计算
@@ -30,20 +28,13 @@ Widget::Widget(QWidget *parent)
     connect(&Model,&model::res_u,this,&Widget::send_compute_res);  //计算完成发送至被控对象
     thread1.start();
 
-    //定时器
-    pTimer1 = new QTimer(this);
-    for (int i = 0; i < 700; i++) {
-        qreal x = i;
-        m_data.append(QPointF(x,qSin(2.0 * 3.141592 * x / 360.0)));
-    }
-    //m_series->append(m_data);
-    connect(pTimer1,SIGNAL(timeout()),this,SLOT(plot()));
-
 
     //通讯线程
     connect(this,&Widget::send_signal,client,&Client::SendMsg);
-    client->moveToThread(&thread2);
-    thread2.start();
+    //client->moveToThread(&thread2);
+    //thread2.start();
+
+
 
     //读取数据
     connect(client,SIGNAL(sig_readyRead(QByteArray)),this,SLOT(SlotReadData(QByteArray)));
@@ -52,7 +43,6 @@ Widget::Widget(QWidget *parent)
 
     //收到y后读取输入
     connect(this,SIGNAL(read_signal(double)),this,SLOT(read_input(double)));
-
 
 }
 
@@ -82,7 +72,8 @@ void Widget::Init()
 void Widget::on_connectserver_clicked()
 {
     client->Connect("127.0.0.1",9999);    //连接
-    pTimer1->start(50);                   //启动绘图定时器
+    //pTimer1->start(50);                   //启动绘图定时器
+    m_chart->pTimer1->start(50);        //启动绘图定时器
     emit start_receive();
 }
 
@@ -124,10 +115,16 @@ void Widget::send_compute_res(double res)  //发送计算后的uk
 
 
 
-void Widget::plot() //绘图
-{
-    m_series->replace(m_data);
-}
+//void Widget::plot() //绘图
+//{
+//    //更新坐标点
+ //   qreal x = y_current;
+ //   for (int i=0; i<m_data.size(); ++i)
+ //               m_data[i].setX(m_data.at(i).x() - 1);
+ //   m_data.append(QPointF(700,x));
+//    m_data.removeFirst();
+ //   m_series->replace(m_data);
+//}
 
 
 
@@ -165,13 +162,9 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 
     y_current = real_yk;
 
-    //更新坐标点
-    qreal x = y_current;
-    for (int i=0; i<m_data.size(); ++i)
-                m_data[i].setX(m_data.at(i).x() - 1);
-    m_data.append(QPointF(700,x));
-    m_data.removeFirst();
+
     //发送信号，准备读取文本框
     emit read_signal(y_current);
+
 
 }

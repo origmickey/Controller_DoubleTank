@@ -24,12 +24,14 @@ SOURCES += \
     data_processor.cpp \
     main.cpp \
     model.cpp \
+    mychart.cpp \
     widget.cpp
 
 HEADERS += \
     client.h \
     data_processor.h \
     model.h \
+    mychart.h \
     widget.h
 
 FORMS += \
