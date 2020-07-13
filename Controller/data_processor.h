@@ -4,37 +4,39 @@
 #include <QByteArray>
 #include <QString>
 #include <QDebug>
-
+#include <QObject>
 #include "JQChecksum.h"
-
-typedef struct ParseData{
-    QByteArray id;
-    QByteArray valid_data;
+typedef struct ParseData
+{    QByteArray id;
+     QByteArray valid_data;
 }ParsedResult ;
 
-class data_processor
+class data_processor : public QObject
 {
-public:    
-    data_processor();
-
-    QByteArray packer(QByteArray data2send, QByteArray id);
+    Q_OBJECT
+public:
+    explicit data_processor(QObject *parent = nullptr);
+    QByteArray packer(QByteArray data2send, int id_type);
     void unpacker(QByteArray recv_data);
-
     QByteArray data_pool;
 
+    QList<QByteArray> id_list;
+
+signals:
+    void ValidDataReady(QByteArray id ,QByteArray data);
+
+public slots:
+    void ProccessingTask(QByteArray rawdata);
 
 private:
     QByteArray  head;
-    QByteArray  id;
+
 
     int min_frame;
-
-
 
     void Init();
 
 
-
 };
-
 #endif // DATA_PROCESSOR_H
+

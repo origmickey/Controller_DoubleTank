@@ -49,6 +49,7 @@ private slots:
 signals:
     void get_input(double input);
     void start_receive();
+    void send_signal(QByteArray msg);
 
 private:
     Ui::Widget *ui;
@@ -57,9 +58,7 @@ private:
     QList<QPointF> m_data;//存放数据
     model Model;
     QTimer *pTimer1;
-    QQueue<double> uk;  //存放4个uk
-    QQueue<double> ek;   //存放2个ek
-    QQueue<double> yk;  //存放2个返回值
+
 
 };
 #endif // WIDGET_H

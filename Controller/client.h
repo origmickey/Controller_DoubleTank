@@ -17,12 +17,14 @@ public:
 
     void Connect(QString addr,quint16 port);
 
-    void SendMsg(QByteArray data);
+
 
 
 
 public slots:
     void ReadMsg();
+    void SendMsg(QByteArray data);
+
 
 signals:
     void new_data(double value);

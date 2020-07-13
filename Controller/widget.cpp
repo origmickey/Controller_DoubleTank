@@ -1,6 +1,5 @@
 #include "widget.h"
 #include "ui_widget.h"
-
 #include "JQChecksum.h"
 
 Widget::Widget(QWidget *parent)
@@ -10,18 +9,6 @@ Widget::Widget(QWidget *parent)
     ui->setupUi(this);
     this->Init();
 
-    /*
-    //uk和ek初始化
-    for (int i = 0; i < 4; ++i) {
-        uk.enqueue(0);
-
-    }
-    for (int i = 0; i < 2; ++i) {
-        ek.enqueue(0);
-        yk.enqueue(1);
-    }
-    //qDebug()<<ek;
-    */
 
     //界面
     m_series = new QLineSeries;
@@ -54,11 +41,12 @@ Widget::Widget(QWidget *parent)
 
     //通讯线程
     //connect(this,SIGNAL(start_receive()),client,SLOT(ReadMsg()));
-    connect(client,SIGNAL(readyRead()),client,SLOT(ReadMsg()));
+    //connect(client,SIGNAL(readyRead()),client,SLOT(ReadMsg()));
+    connect(this,&Widget::send_signal,client,&Client::SendMsg);
     connect(client,&Client::new_data,this,&Widget::deal_data);
+    //connect(client,&Client::new_data,&Model,&model::updata_y); //model更新返回值
     client->moveToThread(&thread2);
     thread2.start();
-
 }
 
 Widget::~Widget()
@@ -98,6 +86,7 @@ void Widget::on_connectserver_clicked()
     emit start_receive();
 }
 
+
 void Widget::on_sendmsg_clicked()
 {
 
@@ -105,29 +94,34 @@ void Widget::on_sendmsg_clicked()
 
     QByteArray data2send = QByteArray::number(u,16);
 
-    QByteArray id=QByteArray::fromHex("01");
+    //QByteArray id=QByteArray::fromHex("01");
 
+    int id = 1;
     QByteArray  msg = msg_processor->packer(data2send,id);
 
-    client->SendMsg(msg);
+    //client->SendMsg(msg);
+    emit send_signal(msg);  //发送信号
 
+    QString LogInfo;
+    LogInfo.sprintf("%p", QThread::currentThread());
+    qDebug() <<"threadID : "<<LogInfo;
 
 }
 
 void Widget::on_pushButton_clicked()
 {
     double input = ui->lineEdit->text().toDouble(); //读取当前输入ek
-    double ek1 = input - yk.last();
+    //double ek1 = input - yk.last();
     //ek.enqueue(ek1);
     //ek.dequeue();
     //qDebug()<<ek;
-    emit get_input(ek1);
+    emit get_input(input);
 }
 
 
-void Widget::send_compute_res(double res)  //发送计算后的控制量
+void Widget::send_compute_res(double res)
 {
-    qDebug()<<res;//待补充???
+    qDebug()<<res;
 
     //qreal x = res;
     //for (int i=0; i<m_data.size(); ++i)
@@ -143,6 +137,8 @@ void Widget::plot() //绘图
 {
     m_series->replace(m_data);
 }
+
+
 
 void Widget::deal_data(double value)
 {
