@@ -27,4 +27,6 @@ void Client::ReadMsg()
 {
     QString msg=QString(this->readAll());
     qDebug()<<msg;
+    double value = 1;
+    emit new_data(value);
 }

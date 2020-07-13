@@ -24,6 +24,9 @@ public:
 public slots:
     void ReadMsg();
 
+signals:
+    void new_data(double value);
+
 };
 
 #endif // CLIENT_H

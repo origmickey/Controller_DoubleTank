@@ -1,6 +1,6 @@
 QT       += core gui
 QT       += network
-
+QT       += charts
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,11 +23,13 @@ SOURCES += \
     client.cpp \
     data_processor.cpp \
     main.cpp \
+    model.cpp \
     widget.cpp
 
 HEADERS += \
     client.h \
     data_processor.h \
+    model.h \
     widget.h
 
 FORMS += \
