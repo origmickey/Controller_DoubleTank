@@ -23,11 +23,11 @@ Widget::Widget(QWidget *parent)
 
     ui->widget->setChart(m_chart);
 
-    //绑定
+
+    //模型计算
     Model.moveToThread(&thread1);
-    connect(this,&Widget::get_input,&Model,&model::compute);
-    connect(&Model,&model::res_u,this,&Widget::send_compute_res);
-    //connect(&thread1, &QThread::finished, &Model, &QObject::deleteLater);
+    connect(this,&Widget::get_input,&Model,&model::controller);  //收到返回值后，读取输入发送至控制器计算
+    connect(&Model,&model::res_u,this,&Widget::send_compute_res);  //计算完成发送至被控对象
     thread1.start();
 
     //定时器
@@ -39,14 +39,21 @@ Widget::Widget(QWidget *parent)
     //m_series->append(m_data);
     connect(pTimer1,SIGNAL(timeout()),this,SLOT(plot()));
 
+
     //通讯线程
-    //connect(this,SIGNAL(start_receive()),client,SLOT(ReadMsg()));
-    //connect(client,SIGNAL(readyRead()),client,SLOT(ReadMsg()));
     connect(this,&Widget::send_signal,client,&Client::SendMsg);
-    connect(client,&Client::new_data,this,&Widget::deal_data);
-    //connect(client,&Client::new_data,&Model,&model::updata_y); //model更新返回值
-    client->moveToThread(&thread2);
-    thread2.start();
+    //client->moveToThread(&thread2);
+    //thread2.start();
+
+    //读取数据
+    connect(client,SIGNAL(sig_readyRead(QByteArray)),this,SLOT(SlotReadData(QByteArray)));
+    connect(this,SIGNAL(ProccessingCall(QByteArray)),msg_processor,SLOT(ProccessingTask(QByteArray)));
+    connect(msg_processor,SIGNAL(ValidDataReady(QByteArray,QByteArray)),this,SLOT(GetValidData(QByteArray,QByteArray)));
+
+    //收到y后读取输入
+    connect(this,SIGNAL(read_signal()),this,SLOT(read_input()));
+
+
 }
 
 Widget::~Widget()
@@ -69,15 +76,8 @@ void Widget::Init()
     msg_processor = new data_processor;
 
 
-//    QByteArray head=QByteArray::fromHex("FFBE");
-//    QByteArray data("a");
-//    data=head+data;
-
-//    qDebug()<<data;
-
-//    qDebug()<<data.indexOf(head);
-
 }
+
 
 void Widget::on_connectserver_clicked()
 {
@@ -87,16 +87,18 @@ void Widget::on_connectserver_clicked()
 }
 
 
-void Widget::on_sendmsg_clicked()
+void Widget::on_sendmsg_clicked()     //启动发送
 {
 
-    int u=10;
+
+    int u = 0;
 
     QByteArray data2send = QByteArray::number(u,16);
 
-    //QByteArray id=QByteArray::fromHex("01");
+    //QByteArray id=QByteArray::fromHex("00");
 
-    int id = 1;
+    int id = 0;
+
     QByteArray  msg = msg_processor->packer(data2send,id);
 
     //client->SendMsg(msg);
@@ -108,55 +110,73 @@ void Widget::on_sendmsg_clicked()
 
 }
 
-void Widget::on_pushButton_clicked()
+
+void Widget::send_compute_res(double res)  //发送计算后的uk
+//res为计算结果
 {
-    double input = ui->lineEdit->text().toDouble(); //读取当前输入ek
-    //double ek1 = input - yk.last();
-    //ek.enqueue(ek1);
-    //ek.dequeue();
-    //qDebug()<<ek;
-    emit get_input(input);
-}
-
-
-void Widget::send_compute_res(double res)
-{
-    qDebug()<<res;
-
-    //qreal x = res;
-    //for (int i=0; i<m_data.size(); ++i)
-    //            m_data[i].setX(m_data.at(i).x() - 1);
-    //m_data.append(QPointF(700,x));
-    //m_data.removeFirst();
-
+   int u = res*1000;
+   QByteArray data2send = QByteArray::number(u,16);
+   //QByteArray id = QByteArray::fromHex("00");
+   int id = 0;
+   QByteArray msg = msg_processor->packer(data2send,id);
+   emit send_signal(msg);
 }
 
 
 
 void Widget::plot() //绘图
 {
+    qreal x = y_current;
+    for (int i=0; i<m_data.size(); ++i)
+                m_data[i].setX(m_data.at(i).x() - 1);
+    m_data.append(QPointF(700,x));
+    m_data.removeFirst();
     m_series->replace(m_data);
 }
 
 
 
-void Widget::deal_data(double value)
+//void Widget::deal_data(double value) //用于更新曲线坐标
+//{
+
+//}
+
+
+
+void Widget::read_input()  //读取输入框数
 {
-    qDebug()<<"new value is:"<<value;
-    //更新m_data
-    qreal x = value;
-    for (int i=0; i<m_data.size(); ++i)
-                m_data[i].setX(m_data.at(i).x() - 1);
-    m_data.append(QPointF(700,x));
-    m_data.removeFirst();
+    double input = ui->lineEdit->text().toDouble();
+    emit get_input(input,y_current);
+}
+
+
+void Widget::SlotReadData(const QByteArray &data)
+{
+    qDebug()<<" data: "<<QString(data);
+    emit ProccessingCall(data);
 }
 
 
 
+void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
+{
+    qDebug()<<"GetValidData id is :"<<id;
 
+    qDebug()<<"proccessed_data is : "<<proccessed_data;
 
+    bool ok;
 
+    int int_yk = proccessed_data.toInt(&ok, 16);
 
+    double times = 1000;
+    double double_yk = int_yk;
 
+    double real_yk = double_yk / times;
 
+    qDebug()<<"real_yk is :"<< real_yk;
 
+    y_current = real_yk;
+    //发送信号，准备读取文本框
+    emit read_signal();
+
+}

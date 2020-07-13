@@ -18,7 +18,7 @@ void Client::Connect(QString addr,quint16 port)
 
 void Client::SendMsg(QByteArray  data)
 {
-    qDebug()<<data;
+    qDebug()<<"data is"<<data;
     this->write(data);
 
     QString LogInfo;
@@ -31,11 +31,10 @@ void Client::ReadMsg()
 {
     QString LogInfo;
     LogInfo.sprintf("%p", QThread::currentThread());
-
     qDebug() <<"threadID : "<<LogInfo;
-    QString msg=QString(this->readAll());
+
+    QByteArray msg= this->readAll();
     qDebug()<<msg;
 
-    double value = 1;
-    emit new_data(value);
+    emit sig_readyRead(msg);
 }

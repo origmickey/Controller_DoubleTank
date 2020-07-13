@@ -27,7 +27,7 @@ public slots:
 
 
 signals:
-    void new_data(double value);
+    void sig_readyRead(const QByteArray&);
 
 };
 

@@ -17,7 +17,7 @@ signals:
     void res_u(double u);       //发送计算结果
 
 public slots:
-    void compute(double input);   //计算
+    void controller(double input, double y);
     void updata_y(double y);
     double Dalin_CTL(double input,double y);
     double average(double buf[4]);

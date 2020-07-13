@@ -39,17 +39,23 @@ private slots:
 
     void on_sendmsg_clicked();
 
-    void on_pushButton_clicked();
+    //void on_pushButton_clicked();
 
     void send_compute_res(double res);
 
     void plot();
 
-    void deal_data(double value);
+    //void deal_data(double value);
+    void read_input();
+    void SlotReadData(const QByteArray &data);
+    void GetValidData(QByteArray id , QByteArray proccessed_data);
+
 signals:
-    void get_input(double input);
+    void get_input(double,double);
     void start_receive();
     void send_signal(QByteArray msg);
+    void ProccessingCall(QByteArray data);
+    void read_signal();
 
 private:
     Ui::Widget *ui;
@@ -58,7 +64,7 @@ private:
     QList<QPointF> m_data;//存放数据
     model Model;
     QTimer *pTimer1;
-
+    double y_current;
 
 };
 #endif // WIDGET_H

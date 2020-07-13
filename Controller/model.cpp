@@ -14,26 +14,12 @@ model::model(QObject *parent) : QObject(parent)
 
 }
 
-void model::compute(double input)
+void model::controller(double input, double y)//计算发送到被控对象的u
 {
-    double u = input+1 ;
-    //
-    //计算过程
-    //
-    double ek1 = input - yk.last();
-    ek.enqueue(ek1);
-    ek.dequeue();
-    //slide_avg(input,y)
-
-
-    qDebug()<<ek;
-    //
-    QString LogInfo;
-    LogInfo.sprintf("%p", QThread::currentThread());
-    qDebug() <<"threadID : "<<LogInfo;
+    double u;
+    u = slide_avg(input,y);
     emit res_u(u);
 }
-
 
 void model::updata_y(double y)
 {
