@@ -42,8 +42,8 @@ Widget::Widget(QWidget *parent)
 
     //通讯线程
     connect(this,&Widget::send_signal,client,&Client::SendMsg);
-    //client->moveToThread(&thread2);
-    //thread2.start();
+    client->moveToThread(&thread2);
+    thread2.start();
 
     //读取数据
     connect(client,SIGNAL(sig_readyRead(QByteArray)),this,SLOT(SlotReadData(QByteArray)));
