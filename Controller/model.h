@@ -14,10 +14,10 @@ public:
 
 
 signals:
-    void res_u(double u);       //发送计算结果
+    void res_u(double u,int id);       //发送计算结果
 
 public slots:
-    void controller(double input, double y);
+    void controller(double input, double y,int id);
     void updata_y(double y);
     double Dalin_CTL(double input,double y);
     double average(double buf[4]);

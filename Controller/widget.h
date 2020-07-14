@@ -39,6 +39,8 @@ public:
 
     data_processor * msg_processor;
 
+
+
 private slots:
     void on_connectserver_clicked();
 
@@ -46,23 +48,29 @@ private slots:
 
     //void on_pushButton_clicked();
 
-    void send_compute_res(double res);
+    void send_compute_res(double res,int id);
 
     void plot(QList<QPointF> data);
+    void plot2(QList<QPointF> data);
 
     //void deal_data(double value);
-    void read_input(double y);
+    void read_input(double y,int id);
     void SlotReadData(const QByteArray &data);
     void GetValidData(QByteArray id , QByteArray proccessed_data);
 
-    void on_verticalSlider_valueChanged(int value);
+    //void on_verticalSlider_valueChanged(int value);
 
 signals:
-    void get_input(double,double);
+    void get_input(double,double,int);
+    void get_input2(double,double,int);
+
     void start_receive();
     void send_signal(QByteArray msg);
     void ProccessingCall(QByteArray data);
-    void read_signal(double y);
+    void read_signal(double y,int id);
+
+    void read_new(double y);
+    void read_new2(double y);
 
 private:
     Ui::Widget *ui;
@@ -70,19 +78,26 @@ private:
     //QChart *m_chart2;
     QSplineSeries* m_series;
     //QList<QPointF> m_data;//存放数据
+
     Mydata m_data;
+    Mydata m_data2;
+
     model Model;
     model Model2;
+
     QTimer *pTimer1;
     double y_current; //当前液面高度
     double y_current2;
     double m_offset;
+    int obj;  //被控对象
+    int id_tcp ;
+
 
 protected:
-       void paintEvent(QPaintEvent *event);
-       void timerEvent(QTimerEvent *event);
-       void painttank(double yk,int pointx,int tunky,int width,int height);
 
+    void paintEvent(QPaintEvent *event);
+    void timerEvent(QTimerEvent *event);
+    void painttank(double yk,int pointx,int tunky,int width,int height);
 
 };
 #endif // WIDGET_H

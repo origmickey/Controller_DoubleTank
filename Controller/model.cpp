@@ -14,11 +14,12 @@ model::model(QObject *parent) : QObject(parent)
 
 }
 
-void model::controller(double input, double y)//计算发送到被控对象的u
+void model::controller(double input, double y, int id)//计算发送到被控对象的u
 {
+    id = id;
     double u;
     u = Dalin_CTL(input,y);
-    emit res_u(u);
+    emit res_u(u,id);
 }
 
 void model::updata_y(double y)

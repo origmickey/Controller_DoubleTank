@@ -32,19 +32,31 @@ Widget::Widget(QWidget *parent)
     m_series->attachAxis(m_chart->axisY);
     //m_series->replace(data);
     ui->widget->setChart(m_chart);
-    qDebug()<<m_data.data[12];
+
+    //qDebug()<<m_data.data[12];
+
     connect(pTimer1,SIGNAL(timeout()),&m_data,SLOT(data_update()));
+    connect(pTimer1,SIGNAL(timeout()),&m_data2,SLOT(data_update()));
+
     connect(&m_data,SIGNAL(refresh(QList<QPointF>)),this,SLOT(plot(QList<QPointF>)));
-    connect(this,SIGNAL(read_signal(double)),&m_data,SLOT(get_height(double)));
+    connect(&m_data2,SIGNAL(refresh(QList<QPointF>)),this,SLOT(plot2(QList<QPointF>)));
+
+    connect(this,SIGNAL(read_new(double)),&m_data,SLOT(get_height(double,int)));
+    connect(this,SIGNAL(read_new2(double)),&m_data2,SLOT(get_height(double,int)));
     //m_data.moveToThread(&thread2);
     //thread2.start();
 
 
     //模型计算
     Model.moveToThread(&thread1);
+    Model2.moveToThread(&thread2);
     connect(this,&Widget::get_input,&Model,&model::controller);  //收到返回值后，读取输入发送至控制器计算
+    connect(this,&Widget::get_input2,&Model2,&model::controller);
+
     connect(&Model,&model::res_u,this,&Widget::send_compute_res);  //计算完成发送至被控对象
+    connect(&Model2,&model::res_u,this,&Widget::send_compute_res);
     thread1.start();
+    thread2.start();
 
 
     //通讯线程
@@ -60,7 +72,7 @@ Widget::Widget(QWidget *parent)
     connect(msg_processor,SIGNAL(ValidDataReady(QByteArray,QByteArray)),this,SLOT(GetValidData(QByteArray,QByteArray)));
 
     //收到y后读取输入
-    connect(this,SIGNAL(read_signal(double)),this,SLOT(read_input(double)));
+    connect(this,SIGNAL(read_signal(double,int)),this,SLOT(read_input(double,int)));
 
 }
 
@@ -98,7 +110,8 @@ void Widget::on_connectserver_clicked()
 
 void Widget::on_sendmsg_clicked()     //启动发送
 {
-
+    obj = ui->comboBox->currentIndex();
+    qDebug()<<"control target is :"<<obj;
 
     int u = 10;
 
@@ -106,7 +119,7 @@ void Widget::on_sendmsg_clicked()     //启动发送
 
     //QByteArray id=QByteArray::fromHex("00");
 
-    int id = 2;
+    int id = obj*3+2;
 
     QByteArray  msg = msg_processor->packer(data2send,id);
 
@@ -120,13 +133,13 @@ void Widget::on_sendmsg_clicked()     //启动发送
 }
 
 
-void Widget::send_compute_res(double res)  //发送计算后的uk
+void Widget::send_compute_res(double res, int id)  //发送计算后的uk
 //res为计算结果
 {
    int u = res*1000;
    QByteArray data2send = QByteArray::number(u,16);
    //QByteArray id = QByteArray::fromHex("00");
-   int id = 0;
+   id = id-1;
    QByteArray msg = msg_processor->packer(data2send,id);
    emit send_signal(msg);
 }
@@ -135,17 +148,35 @@ void Widget::send_compute_res(double res)  //发送计算后的uk
 
 void Widget::plot(QList<QPointF> data) //绘图
 {
-    //qDebug()<<data[650];
-    m_series->replace(data);
+    if(obj == 0)
+    {
+        m_series->replace(data);
+    }
+}
+
+void Widget::plot2(QList<QPointF> data) //绘图
+{
+    if(obj == 1)
+    {
+        m_series->replace(data);
+    }
 }
 
 
 
-void Widget::read_input(double y)  //读取输入框数
+void Widget::read_input(double y, int id)  //读取输入框数
 {
     //double input = ui->lineEdit->text().toDouble();
     double input = ui->spinBox->text().toDouble();
-    emit get_input(input,y);
+
+    if(id == 1)    //若控制对象为0，则发送至1对应的model
+    {
+        emit get_input(input,y,id);
+    }
+    if(id == 4)
+    {
+        emit get_input2(input,y,id);
+    }
 }
 
 
@@ -159,7 +190,9 @@ void Widget::SlotReadData(const QByteArray &data)
 
 void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 {
-    qDebug()<<"GetValidData id is :"<<id;
+    int index = msg_processor->id_list.indexOf(id);
+
+    //id_tcp = id;
 
     qDebug()<<"proccessed_data is : "<<proccessed_data;
 
@@ -176,13 +209,27 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 
     y_current = real_yk;
 
+    switch (index) {
+    case 1: {
+        qDebug()<<"got yk0";
+        emit read_new(y_current);
+    }
+    case 4: {
+        qDebug()<<"got yk1";
+        emit read_new2(y_current);
+    }
+
 
     //发送信号，准备读取文本框
-    emit read_signal(y_current);
+    emit read_signal(y_current,index);
 
+}
 }
 
 //水槽绘图
+
+
+
 void Widget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
@@ -197,12 +244,8 @@ void Widget::paintEvent(QPaintEvent *event)
     painttank(y_current*4,170,300,220,500);
 }
 
+
 void Widget::painttank(double yk, int pointx, int tunky, int width, int height)
-//double yk：液面高度
-//int pointx：水箱液面初始点横坐标
-//int tunky：水箱左上角角点纵坐标
-//int width：水箱右下角角点横坐标
-//int height：水箱右下角角点纵坐标
 {
     QPainter painter(this);  //QWidget为绘图设备，创建一个画刷对象，主要用到设置颜色和填充模式，brush，setBrush
     //正弦曲线公式 y = A * sin(ωx + φ) + k
