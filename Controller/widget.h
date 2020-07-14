@@ -72,9 +72,10 @@ private:
     //QList<QPointF> m_data;//存放数据
     Mydata m_data;
     model Model;
+    model Model2;
     QTimer *pTimer1;
     double y_current; //当前液面高度
-
+    double y_current2;
     double m_offset;
 
 protected:

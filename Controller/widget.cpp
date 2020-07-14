@@ -193,7 +193,8 @@ void Widget::timerEvent(QTimerEvent *event)
 void Widget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-    painttank(y_current*4,60,300,200,500);
+    painttank(100,60,300,110,500);
+    painttank(y_current*4,170,300,220,500);
 }
 
 void Widget::painttank(double yk, int pointx, int tunky, int width, int height)
