@@ -25,6 +25,7 @@ SOURCES += \
     main.cpp \
     model.cpp \
     mychart.cpp \
+    mydata.cpp \
     widget.cpp
 
 HEADERS += \
@@ -32,6 +33,7 @@ HEADERS += \
     data_processor.h \
     model.h \
     mychart.h \
+    mydata.h \
     widget.h
 
 FORMS += \

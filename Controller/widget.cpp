@@ -1,6 +1,7 @@
 #include "widget.h"
 #include "ui_widget.h"
 #include "JQChecksum.h"
+//extern QList<QPointF> data;
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -13,13 +14,19 @@ Widget::Widget(QWidget *parent)
     //界面
 
     m_chart = new Mychart;
-
-    //ui->widget->setChart(m_chart);
-    //m_chart2->addSeries(m_chart->m_series);
-
-    //connect(this,SIGNAL(read_signal(double)),m_chart,SLOT(get_height(double)));
-    //m_chart->moveToThread(&thread2);
-    //thread2.start();
+    pTimer1 = new QTimer;
+    m_series = new QLineSeries;
+    m_chart->addSeries(m_series);
+    m_series->attachAxis(m_chart->axisX);
+    m_series->attachAxis(m_chart->axisY);
+    //m_series->replace(data);
+    ui->widget->setChart(m_chart);
+    qDebug()<<m_data.data[12];
+    connect(pTimer1,SIGNAL(timeout()),&m_data,SLOT(data_update()));
+    connect(&m_data,SIGNAL(refresh(QList<QPointF>)),this,SLOT(plot(QList<QPointF>)));
+    connect(this,SIGNAL(read_signal(double)),&m_data,SLOT(get_height(double)));
+    m_data.moveToThread(&thread2);
+    thread2.start();
 
 
     //模型计算
@@ -72,8 +79,8 @@ void Widget::Init()
 void Widget::on_connectserver_clicked()
 {
     client->Connect("127.0.0.1",9999);    //连接
-    //pTimer1->start(50);                   //启动绘图定时器
-    m_chart->pTimer1->start(50);        //启动绘图定时器
+    pTimer1->start(50);                   //启动绘图定时器
+    //m_chart->pTimer1->start(50);        //启动绘图定时器
     emit start_receive();
 }
 
@@ -115,16 +122,11 @@ void Widget::send_compute_res(double res)  //发送计算后的uk
 
 
 
-//void Widget::plot() //绘图
-//{
-//    //更新坐标点
- //   qreal x = y_current;
- //   for (int i=0; i<m_data.size(); ++i)
- //               m_data[i].setX(m_data.at(i).x() - 1);
- //   m_data.append(QPointF(700,x));
-//    m_data.removeFirst();
- //   m_series->replace(m_data);
-//}
+void Widget::plot(QList<QPointF> data) //绘图
+{
+    qDebug()<<data[650];
+    m_series->replace(data);
+}
 
 
 

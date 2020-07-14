@@ -11,6 +11,7 @@
 #include <QThread>
 #include <QQueue>
 #include "mychart.h"
+#include "mydata.h"
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -44,7 +45,7 @@ private slots:
 
     void send_compute_res(double res);
 
-    //void plot();
+    void plot(QList<QPointF> data);
 
     //void deal_data(double value);
     void read_input(double y);
@@ -62,10 +63,11 @@ private:
     Ui::Widget *ui;
     Mychart *m_chart;
     //QChart *m_chart2;
-    //QLineSeries* m_series;
+    QLineSeries* m_series;
     //QList<QPointF> m_data;//存放数据
+    Mydata m_data;
     model Model;
-    //QTimer *pTimer1;
+    QTimer *pTimer1;
     double y_current;
 
 };
