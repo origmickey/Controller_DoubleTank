@@ -233,6 +233,7 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 void Widget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
+    ui->height->setText(QString::number(y_current, 10, 4));
     this->update();
 }
 
@@ -240,6 +241,7 @@ void Widget::timerEvent(QTimerEvent *event)
 void Widget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
+
     painttank(h_current*6,60,150,110,500);
     painttank(y_current*6,170,150,220,500);
 }
