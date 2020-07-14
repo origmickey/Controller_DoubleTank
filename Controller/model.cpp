@@ -9,7 +9,7 @@ model::model(QObject *parent) : QObject(parent)
     }
     for (int i = 0; i < 2; ++i) {
         ek.enqueue(0);
-        yk.enqueue(1);
+        yk.enqueue(0);
     }
 
 }
@@ -51,14 +51,14 @@ double model::Dalin_CTL(double input,double y)
 
     //死区算法ek
     double B =input; //限幅值
-    if(uk_1>B/2||uk_1<-B/2)
+    if(uk_1>B/2)
     {
-        uk_1 = uk_1;
+        uk_1 = B/2;
     }
 
-    if(uk_1< B/2&& uk_1>-B/2)
+    if(uk_1< -B/2)
     {
-        uk_1 = 0;
+        uk_1 = -B/2;
     }
 
     uk.enqueue(uk_1);
