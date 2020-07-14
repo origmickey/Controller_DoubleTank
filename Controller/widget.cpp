@@ -135,7 +135,8 @@ void Widget::on_sendmsg_clicked()     //启动发送
 void Widget::send_compute_res(double res, int h ,int id)  //发送计算后的uk
 //res为计算结果
 {
-    h_current = h;
+
+   h_current = h;
    int u = res*1000;
    QByteArray data2send = QByteArray::number(u,16);
    //QByteArray id = QByteArray::fromHex("00");
@@ -183,6 +184,7 @@ void Widget::read_input(double y, int id)  //读取输入框数
 void Widget::SlotReadData(const QByteArray &data)
 {
     qDebug()<<" data: "<<QString(data);
+
     emit ProccessingCall(data);
 }
 
@@ -190,6 +192,7 @@ void Widget::SlotReadData(const QByteArray &data)
 
 void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 {
+
     int index = msg_processor->id_list.indexOf(id);
 
     //id_tcp = id;
@@ -209,22 +212,22 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 
     y_current = real_yk;
 
-    switch (index) {
-    case 1: {
+    if(index==1)
+    {
         qDebug()<<"got yk0";
         emit read_new(y_current);
     }
-    case 4: {
+    if(index ==4)
+    {
         qDebug()<<"got yk1";
-        emit read_new2(y_current);
+         emit read_new2(y_current);
     }
-
-
+    qDebug()<<"target"<<obj;
     //发送信号，准备读取文本框
     emit read_signal(y_current,index);
 
 }
-}
+
 
 //水槽绘图
 
@@ -241,9 +244,29 @@ void Widget::timerEvent(QTimerEvent *event)
 void Widget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
+    double h1;
+    double h2;
+    h1 = h_current;
+    h2 = y_current;
+    if(h_current<0)
+    {
+        h1 = 0;
+    }
+    if(h_current>350/6)
+    {
+        h1 = 350/6;
+    }
+    if(y_current<0)
+    {
+        h2 = 0;
+    }
+    if(y_current>350/6)
+    {
+        h2 = 350/6;
+    }
 
-    painttank(h_current*6,60,150,110,500);
-    painttank(y_current*6,170,150,220,500);
+    painttank(h1*6,60,150,110,500);
+    painttank(h2*6,170,150,220,500);
 }
 
 

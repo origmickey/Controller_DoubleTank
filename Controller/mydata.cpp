@@ -14,12 +14,12 @@ Mydata::Mydata(QObject *parent) : QObject(parent)
 
 void Mydata::get_height(double h)
 {
-    y_current = h;
+    yk = h;
 }
 
 void Mydata::data_update()
 {
-    qreal x = y_current;
+    qreal x = yk;
 
     for (int i=0; i<data.size(); ++i)
                 data[i].setX(data.at(i).x() - 1);

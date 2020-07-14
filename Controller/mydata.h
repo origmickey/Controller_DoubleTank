@@ -10,7 +10,7 @@ class Mydata : public QObject
 public:
     explicit Mydata(QObject *parent = nullptr);
     QList<QPointF> data;
-    double y_current;
+    double yk;
 signals:
     void refresh(QList<QPointF>);
 public slots:
