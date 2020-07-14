@@ -14,7 +14,7 @@ public:
 
 
 signals:
-    void res_u(double u,int id);       //发送计算结果
+    void res_u(double u,double h,int id);       //发送计算结果
 
 public slots:
     void controller(double input, double y,int id);
@@ -27,6 +27,7 @@ private:
     QQueue<double> uk;  //存放4个uk
     QQueue<double> ek;   //存放2个ek
     QQueue<double> yk;  //存放2个返回值
+    double hk;
 
 };
 

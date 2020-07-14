@@ -18,8 +18,9 @@ void model::controller(double input, double y, int id)//计算发送到被控对
 {
     id = id;
     double u;
+    hk = 0.7788*hk+0.5375*uk.last();
     u = Dalin_CTL(input,y);
-    emit res_u(u,id);
+    emit res_u(u,hk,id);
 }
 
 void model::updata_y(double y)

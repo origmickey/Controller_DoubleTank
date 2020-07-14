@@ -41,8 +41,8 @@ Widget::Widget(QWidget *parent)
     connect(&m_data,SIGNAL(refresh(QList<QPointF>)),this,SLOT(plot(QList<QPointF>)));
     connect(&m_data2,SIGNAL(refresh(QList<QPointF>)),this,SLOT(plot2(QList<QPointF>)));
 
-    connect(this,SIGNAL(read_new(double)),&m_data,SLOT(get_height(double,int)));
-    connect(this,SIGNAL(read_new2(double)),&m_data2,SLOT(get_height(double,int)));
+    connect(this,SIGNAL(read_new(double)),&m_data,SLOT(get_height(double)));
+    connect(this,SIGNAL(read_new2(double)),&m_data2,SLOT(get_height(double)));
     //m_data.moveToThread(&thread2);
     //thread2.start();
 
@@ -63,7 +63,6 @@ Widget::Widget(QWidget *parent)
     connect(this,&Widget::send_signal,client,&Client::SendMsg);
     //client->moveToThread(&thread2);
     //thread2.start();
-
 
 
     //读取数据
@@ -133,9 +132,10 @@ void Widget::on_sendmsg_clicked()     //启动发送
 }
 
 
-void Widget::send_compute_res(double res, int id)  //发送计算后的uk
+void Widget::send_compute_res(double res, int h ,int id)  //发送计算后的uk
 //res为计算结果
 {
+    h_current = h;
    int u = res*1000;
    QByteArray data2send = QByteArray::number(u,16);
    //QByteArray id = QByteArray::fromHex("00");
@@ -240,8 +240,8 @@ void Widget::timerEvent(QTimerEvent *event)
 void Widget::paintEvent(QPaintEvent *event)
 {
     Q_UNUSED(event);
-    painttank(100,60,300,110,500);
-    painttank(y_current*4,170,300,220,500);
+    painttank(h_current*6,60,150,110,500);
+    painttank(y_current*6,170,150,220,500);
 }
 
 

@@ -48,7 +48,7 @@ private slots:
 
     //void on_pushButton_clicked();
 
-    void send_compute_res(double res,int id);
+    void send_compute_res(double res, int h, int id);
 
     void plot(QList<QPointF> data);
     void plot2(QList<QPointF> data);
@@ -88,6 +88,7 @@ private:
     QTimer *pTimer1;
     double y_current; //当前液面高度
     double y_current2;
+    double h_current;
     double m_offset;
     int obj;  //被控对象
     int id_tcp ;
