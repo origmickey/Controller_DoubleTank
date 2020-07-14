@@ -17,7 +17,7 @@ model::model(QObject *parent) : QObject(parent)
 void model::controller(double input, double y)//计算发送到被控对象的u
 {
     double u;
-    u = slide_avg(input,y);
+    u = Dalin_CTL(input,y);
     emit res_u(u);
 }
 
@@ -29,10 +29,18 @@ void model::updata_y(double y)
 
 double model::Dalin_CTL(double input,double y)
 {
+
     double numDz[3]={0.9621,-1.6344,0.6894};
     double denDz[2]={-0.7788,-0.2212};
+
     double uk_1;
     double ek_1 = input-y;
+/*
+    double p = 0.22;
+    double ki = 0.02;
+    double kd = 0.4;
+    uk_1 = p*(ek_1-ek[1])+ki*ek_1+kd*(ek_1-ek[1]+ek[0])+uk[3];
+*/
 
     //死区算法ek
     //double B = 0.1; //限幅值
@@ -46,28 +54,25 @@ double model::Dalin_CTL(double input,double y)
     //    ek_1 = 0;
     //}
 
-    uk_1 = -denDz[0]*uk.last() -denDz[1]*uk[1]
-            +numDz[0]*ek_1+numDz[1]*ek.last()+numDz[2]*ek[0];
+    uk_1 = -denDz[0]*uk[3] -denDz[1]*uk[1]
+            +numDz[0]*ek_1+numDz[1]*ek[1]+numDz[2]*ek[0];
 
     //死区算法ek
     double B =input; //限幅值
-    if(uk_1>B/2)
+    if(uk_1>B)
     {
-        uk_1 = B/2;
+        uk_1 = B;
     }
-
-    if(uk_1< -B/2)
+//
+    if(uk_1< -B)
     {
-        uk_1 = -B/2;
+        uk_1 = -B;
     }
 
     uk.enqueue(uk_1);
     uk.dequeue();
     ek.enqueue(ek_1);
     ek.dequeue();
-
-
-
     return uk_1;
  }
 

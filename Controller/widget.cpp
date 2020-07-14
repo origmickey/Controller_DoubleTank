@@ -25,8 +25,8 @@ Widget::Widget(QWidget *parent)
     connect(pTimer1,SIGNAL(timeout()),&m_data,SLOT(data_update()));
     connect(&m_data,SIGNAL(refresh(QList<QPointF>)),this,SLOT(plot(QList<QPointF>)));
     connect(this,SIGNAL(read_signal(double)),&m_data,SLOT(get_height(double)));
-    m_data.moveToThread(&thread2);
-    thread2.start();
+    //m_data.moveToThread(&thread2);
+    //thread2.start();
 
 
     //模型计算
@@ -124,7 +124,7 @@ void Widget::send_compute_res(double res)  //发送计算后的uk
 
 void Widget::plot(QList<QPointF> data) //绘图
 {
-    qDebug()<<data[650];
+    //qDebug()<<data[650];
     m_series->replace(data);
 }
 

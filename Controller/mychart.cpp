@@ -16,7 +16,7 @@ Mychart::Mychart(QChart *parent) : QChart(parent)
     this->setAxisX(axisX);
 
     axisY = new QValueAxis;
-    axisY->setRange(-10,10);
+    axisY->setRange(0,20);
     axisY->setTickCount(5);
     axisY->setLabelFormat("%.2f");
     this->setAxisY(axisY);

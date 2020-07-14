@@ -8,16 +8,31 @@ data_processor::data_processor(QObject *parent) : QObject(parent)
 
 QByteArray data_processor::packer(QByteArray data2send, int id_type)
 {
+    qDebug()<<"in packer";
     QByteArray id;
     id = id_list.at(id_type);
 
+    qDebug()<<"in packer id is : "<<id;
+
     int len = id.size()+data2send.size();
+
+    qDebug()<<"in packer len is : "<<len;
+
     QByteArray len_dataarea = QByteArray::number(len,16);
-    qDebug()<<"len_dataarea in packer is : "<<len;
+
+    qDebug()<<"in packer len_area is : "<<len_dataarea;
+
     QByteArray data_area=id+data2send;
+
+    qDebug()<<"in packer data_area is : "<<data_area;
+
     auto crc32 = JQChecksum::crc32( data_area );
+    qDebug()<<"in packer crc32 is : "<<crc32;
     QByteArray crc_code = QByteArray::number(crc32,16);
+    qDebug()<<"in packer crccode is : "<<crc_code;
     QByteArray msg_frame = head+len_dataarea+data_area+crc_code;
+
+    qDebug()<<"in packer msg_frame is : "<<msg_frame;
     return msg_frame;
 }
 void data_processor::unpacker(QByteArray recv_data){
@@ -69,8 +84,25 @@ void data_processor::unpacker(QByteArray recv_data){
     }
     else
     {
-        qDebug()<<"crc校验错误";
+//        qDebug()<<"crc校验错误";
+//        data_pool=data_pool.mid(11+len_dataarea,-1);//数据池排掉处理完的数据帧，向后继续处理
+        QByteArray id = data_area.mid(0,1);
+        qDebug()<<"id is: "<<id;
+
+        QByteArray valid_data = data_area.mid(1, (data_area.size()-1));
+        qDebug()<<"valid data is :"<< valid_data;
+
+        QString LogInfo;
+        LogInfo.sprintf("%p", QThread::currentThread());
+        qDebug() <<"threadID : "<<LogInfo;
+
+        emit ValidDataReady(id,valid_data);
+
+        ParsedResult parsed_result;
+        parsed_result.id = id;
+        parsed_result.valid_data = valid_data;
         data_pool=data_pool.mid(11+len_dataarea,-1);//数据池排掉处理完的数据帧，向后继续处理
+        qDebug()<<"data_pool next is :"<< data_pool;
     }
 
     }//if 数据区长度正确
@@ -98,7 +130,7 @@ void data_processor::unpacker(QByteArray recv_data){
 
 void data_processor::ProccessingTask(QByteArray rawdata)
 {
-    qDebug()<<"rawdata is : "<<rawdata;
+//    qDebug()<<"rawdata is : "<<rawdata;
     this->unpacker(rawdata);
 }
 

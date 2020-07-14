@@ -26,7 +26,5 @@ void Mydata::data_update()
     data.append(QPointF(700,x));
     data.removeFirst();
 
-
-
     emit refresh(data);
 }

@@ -42,8 +42,8 @@
   <widget class="QChartView" name="widget" native="true">
    <property name="geometry">
     <rect>
-     <x>190</x>
-     <y>210</y>
+     <x>230</x>
+     <y>180</y>
      <width>431</width>
      <height>291</height>
     </rect>
