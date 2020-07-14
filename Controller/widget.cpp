@@ -9,13 +9,24 @@ Widget::Widget(QWidget *parent)
 {
     ui->setupUi(this);
     this->Init();
+    this->startTimer(50);
+    //
+    ui->spinBox->setMinimum(0);
+    ui->spinBox->setMaximum(50);
+    ui->spinBox->setSingleStep(1);
+    ui->verticalSlider->setMinimum(0);
+    ui->verticalSlider->setMaximum(50);
+    ui->verticalSlider->setSingleStep(1);
+    connect(ui->spinBox,SIGNAL(valueChanged(int)),ui->verticalSlider,SLOT(setValue(int)));
+    connect(ui->verticalSlider,SIGNAL(valueChanged(int)),ui->spinBox,SLOT(setValue(int)));
+
 
 
     //界面
 
     m_chart = new Mychart;
     pTimer1 = new QTimer;
-    m_series = new QLineSeries;
+    m_series = new QSplineSeries;
     m_chart->addSeries(m_series);
     m_series->attachAxis(m_chart->axisX);
     m_series->attachAxis(m_chart->axisY);
@@ -79,7 +90,7 @@ void Widget::Init()
 void Widget::on_connectserver_clicked()
 {
     client->Connect("127.0.0.1",9999);    //连接
-    pTimer1->start(50);                   //启动绘图定时器
+    pTimer1->start(100);                   //启动绘图定时器
     //m_chart->pTimer1->start(50);        //启动绘图定时器
     emit start_receive();
 }
@@ -132,7 +143,8 @@ void Widget::plot(QList<QPointF> data) //绘图
 
 void Widget::read_input(double y)  //读取输入框数
 {
-    double input = ui->lineEdit->text().toDouble();
+    //double input = ui->lineEdit->text().toDouble();
+    double input = ui->spinBox->text().toDouble();
     emit get_input(input,y);
 }
 
@@ -168,5 +180,46 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
     //发送信号，准备读取文本框
     emit read_signal(y_current);
 
+}
 
+//水槽绘图
+void Widget::timerEvent(QTimerEvent *event)
+{
+    Q_UNUSED(event);
+    this->update();
+}
+
+
+void Widget::paintEvent(QPaintEvent *event)
+{
+    Q_UNUSED(event);
+    painttank(y_current*4,60,300,200,500);
+}
+
+void Widget::painttank(double yk, int pointx, int tunky, int width, int height)
+//double yk：液面高度
+//int pointx：水箱液面初始点横坐标
+//int tunky：水箱左上角角点纵坐标
+//int width：水箱右下角角点横坐标
+//int height：水箱右下角角点纵坐标
+{
+    QPainter painter(this);  //QWidget为绘图设备，创建一个画刷对象，主要用到设置颜色和填充模式，brush，setBrush
+    //正弦曲线公式 y = A * sin(ωx + φ) + k
+    double w = M_PI/100;  //w为角速度 ，可以理解为波浪的密度，越大密度越大
+    double A = 10;    //  A表示振幅,可以理解为水波的高度,越大高度越高
+    double k = height-yk;    //  k表示y轴偏移
+
+    painter.drawRect(pointx, tunky, width-pointx, height-tunky);//绘制水箱
+    QPainterPath wave; //波浪区域
+    wave.moveTo(pointx, height);//第一点坐标为（0,height）;
+    m_offset += 6; //全局变量
+    //初相位每次加6，每次曲线的起始点不一样，加上定时器的刷新，从而产生动态的效果
+    for(int x = pointx; x <= width; x+=1)  //x从0~w的值而改变，从而得到正弦曲线
+    {
+         double waveY = (double)(A * sin(w * x + m_offset))/2 + k;// waveY随着x的值改变而改变，从而得到正弦曲线
+         wave.lineTo(x, waveY);   //从上一个绘制点画一条线到（x，waveY）；
+    }
+    wave.lineTo(width, height); //右下角，坐标（width, height），移动到右下角结束点,整体形成一个闭合路径
+    painter.setBrush(Qt::darkBlue); //填充绿色
+    painter.drawPath(wave);      //绘制出图形
 }

@@ -7,7 +7,7 @@ Mydata::Mydata(QObject *parent) : QObject(parent)
 {
     for (int i = 0; i < 700; i++) {
         qreal x = i;
-        data.append(QPointF(x,qSin(2.0 * 3.141592 * x / 360.0)));
+        data.append(QPointF(x,0));
     }
     qDebug()<<data[12];
 }

@@ -12,6 +12,9 @@
 #include <QQueue>
 #include "mychart.h"
 #include "mydata.h"
+#include <QPainter>
+#include <QtMath>
+
 
 QT_CHARTS_USE_NAMESPACE
 
@@ -52,6 +55,8 @@ private slots:
     void SlotReadData(const QByteArray &data);
     void GetValidData(QByteArray id , QByteArray proccessed_data);
 
+    void on_verticalSlider_valueChanged(int value);
+
 signals:
     void get_input(double,double);
     void start_receive();
@@ -63,12 +68,20 @@ private:
     Ui::Widget *ui;
     Mychart *m_chart;
     //QChart *m_chart2;
-    QLineSeries* m_series;
+    QSplineSeries* m_series;
     //QList<QPointF> m_data;//存放数据
     Mydata m_data;
     model Model;
     QTimer *pTimer1;
-    double y_current;
+    double y_current; //当前液面高度
+
+    double m_offset;
+
+protected:
+       void paintEvent(QPaintEvent *event);
+       void timerEvent(QTimerEvent *event);
+       void painttank(double yk,int pointx,int tunky,int width,int height);
+
 
 };
 #endif // WIDGET_H
