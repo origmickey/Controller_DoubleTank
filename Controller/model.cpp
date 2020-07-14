@@ -33,20 +33,34 @@ double model::Dalin_CTL(double input,double y)
     double denDz[2]={-0.7788,-0.2212};
     double uk_1;
     double ek_1 = input-y;
-    //死区算法
-    double B = 0.1; //限幅值
-    if(ek_1>B||ek_1<-B)
-    {
-        ek_1 = ek_1;
-    }
 
-    if(ek_1< B&& ek_1>-B)
-    {
-        ek_1 = 0;
-    }
+    //死区算法ek
+    //double B = 0.1; //限幅值
+    //if(ek_1>B||ek_1<-B)
+    //{
+    //    ek_1 = ek_1;
+    //}
+
+    //if(ek_1< B&& ek_1>-B)
+    //{
+    //    ek_1 = 0;
+    //}
 
     uk_1 = -denDz[0]*uk.last() -denDz[1]*uk[1]
             +numDz[0]*ek_1+numDz[1]*ek.last()+numDz[2]*ek[0];
+
+    //死区算法ek
+    double B =input; //限幅值
+    if(uk_1>B/2||uk_1<-B/2)
+    {
+        uk_1 = uk_1;
+    }
+
+    if(uk_1< B/2&& uk_1>-B/2)
+    {
+        uk_1 = 0;
+    }
+
     uk.enqueue(uk_1);
     uk.dequeue();
     ek.enqueue(ek_1);
