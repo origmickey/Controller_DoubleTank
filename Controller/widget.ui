@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>811</width>
-    <height>558</height>
+    <width>1487</width>
+    <height>579</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -192,6 +192,16 @@
    </property>
    <property name="text">
     <string>停止调节</string>
+   </property>
+  </widget>
+  <widget class="QChartView" name="widget_2" native="true">
+   <property name="geometry">
+    <rect>
+     <x>990</x>
+     <y>140</y>
+     <width>461</width>
+     <height>371</height>
+    </rect>
    </property>
   </widget>
  </widget>

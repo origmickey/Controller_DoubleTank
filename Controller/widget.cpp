@@ -25,13 +25,22 @@ Widget::Widget(QWidget *parent)
     //界面
 
     m_chart = new Mychart;
+    m_chart2 = new Mychart;
+
     pTimer1 = new QTimer;
+
     m_series = new QSplineSeries;
     m_chart->addSeries(m_series);
     m_series->attachAxis(m_chart->axisX);
     m_series->attachAxis(m_chart->axisY);
     //m_series->replace(data);
     ui->widget->setChart(m_chart);
+
+    m_series2 = new QSplineSeries;
+    m_chart2->addSeries(m_series2);
+    m_series2->attachAxis(m_chart2->axisX);
+    m_series2->attachAxis(m_chart2->axisY);
+    ui->widget_2->setChart(m_chart2);
 
     //qDebug()<<m_data.data[12];
 
@@ -147,25 +156,18 @@ void Widget::send_compute_res(double res, int h ,int id)  //发送计算后的uk
        QByteArray msg = msg_processor->packer(data2send,id);
        emit send_signal(msg);
    }
-
 }
 
 
 
 void Widget::plot(QList<QPointF> data) //绘图
 {
-    if(obj == 0)
-    {
-        m_series->replace(data);
-    }
+    m_series->replace(data);
 }
 
 void Widget::plot2(QList<QPointF> data) //绘图
 {
-    if(obj == 1)
-    {
-        m_series->replace(data);
-    }
+    m_series2->replace(data);
 }
 
 
@@ -240,9 +242,6 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 
 
 //水槽绘图
-
-
-
 void Widget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
@@ -320,4 +319,5 @@ void Widget::on_sendmsg_2_clicked()
 
     QByteArray  msg = msg_processor->packer(data2send,id);
 
+    emit send_signal(msg);
 }

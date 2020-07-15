@@ -77,8 +77,9 @@ signals:
 private:
     Ui::Widget *ui;
     Mychart *m_chart;
-    //QChart *m_chart2;
+    Mychart *m_chart2;
     QSplineSeries* m_series;
+    QSplineSeries* m_series2;
     //QList<QPointF> m_data;//存放数据
 
     Mydata m_data;
