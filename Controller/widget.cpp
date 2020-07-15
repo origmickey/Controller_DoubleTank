@@ -236,7 +236,6 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
     qDebug()<<"target"<<obj;
     //发送信号，准备读取文本框
     emit read_signal(y_current,index);
-
 }
 
 
@@ -306,5 +305,19 @@ void Widget::painttank(double yk, int pointx, int tunky, int width, int height)
 
 void Widget::on_sendmsg_2_clicked()
 {
-    on = 0;
+    int id;
+    if(obj==0)
+    {
+        id = 6;
+    }
+    if(obj==1)
+    {
+        id =7;
+    }
+    int u = 10;
+
+    QByteArray data2send = QByteArray::number(u,16);
+
+    QByteArray  msg = msg_processor->packer(data2send,id);
+
 }

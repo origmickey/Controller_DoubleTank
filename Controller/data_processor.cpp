@@ -10,6 +10,8 @@ QByteArray data_processor::packer(QByteArray data2send, int id_type)
 {
     qDebug()<<"in packer";
     QByteArray id;
+
+    qDebug()<<"para id is :"<< id_type;
     id = id_list.at(id_type);
 
     qDebug()<<"in packer id is : "<<id;
@@ -143,9 +145,12 @@ void data_processor::Init()
     id_list.append(QByteArray::fromHex("00"));
     id_list.append(QByteArray::fromHex("01"));
     id_list.append(QByteArray::fromHex("02"));
+
     id_list.append(QByteArray::fromHex("10"));
     id_list.append(QByteArray::fromHex("11"));
     id_list.append(QByteArray::fromHex("12"));
+    id_list.append(QByteArray::fromHex("03"));
+    id_list.append(QByteArray::fromHex("13"));
 
     data_pool=QByteArray();
 
