@@ -54,13 +54,20 @@ private slots:
     void plot2(QList<QPointF> data);
 
     //void deal_data(double value);
+
     void read_input(double y,int id);
+    void read_input2(double y,int id);
+
     void SlotReadData(const QByteArray &data);
     void GetValidData(QByteArray id , QByteArray proccessed_data);
 
     //void on_verticalSlider_valueChanged(int value);
 
     void on_sendmsg_2_clicked();
+
+    void on_pushButton_clicked();
+
+    void on_sendmsg_3_clicked();
 
 signals:
     void get_input(double,double,int);
@@ -69,7 +76,9 @@ signals:
     void start_receive();
     void send_signal(QByteArray msg);
     void ProccessingCall(QByteArray data);
+
     void read_signal(double y,int id);
+    void read_signal2(double y,int id);
 
     void read_new(double y);
     void read_new2(double y);

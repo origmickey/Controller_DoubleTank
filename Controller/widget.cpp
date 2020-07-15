@@ -20,6 +20,14 @@ Widget::Widget(QWidget *parent)
     connect(ui->spinBox,SIGNAL(valueChanged(int)),ui->verticalSlider,SLOT(setValue(int)));
     connect(ui->verticalSlider,SIGNAL(valueChanged(int)),ui->spinBox,SLOT(setValue(int)));
 
+    ui->spinBox_2->setMinimum(0);
+    ui->spinBox_2->setMaximum(50);
+    ui->spinBox_2->setSingleStep(1);
+    ui->verticalSlider_2->setMinimum(0);
+    ui->verticalSlider_2->setMaximum(50);
+    ui->verticalSlider_2->setSingleStep(1);
+    connect(ui->verticalSlider_2,SIGNAL(valueChanged(int)),ui->spinBox_2,SLOT(setValue(int)));
+    connect(ui->spinBox_2,SIGNAL(valueChanged(int)),ui->verticalSlider_2,SLOT(setValue(int)));
 
 
     //界面
@@ -81,6 +89,7 @@ Widget::Widget(QWidget *parent)
 
     //收到y后读取输入
     connect(this,SIGNAL(read_signal(double,int)),this,SLOT(read_input(double,int)));
+    connect(this,SIGNAL(read_signal2(double,int)),this,SLOT(read_input2(double,int)));
 
 }
 
@@ -118,10 +127,10 @@ void Widget::on_connectserver_clicked()
 
 void Widget::on_sendmsg_clicked()     //启动发送
 {
-    on = 1; //发送允许
+    //on = 1; //发送允许
 
-    obj = ui->comboBox->currentIndex();
-    qDebug()<<"control target is :"<<obj;
+   // obj = ui->comboBox->currentIndex();
+    //qDebug()<<"control target is :"<<obj;
 
     int u = 10;
 
@@ -129,7 +138,7 @@ void Widget::on_sendmsg_clicked()     //启动发送
 
     //QByteArray id=QByteArray::fromHex("00");
 
-    int id = obj*3+2;
+    int id = 2;
 
     QByteArray  msg = msg_processor->packer(data2send,id);
 
@@ -141,6 +150,29 @@ void Widget::on_sendmsg_clicked()     //启动发送
     qDebug() <<"threadID : "<<LogInfo;
 
 }
+
+
+void Widget::on_pushButton_clicked()  //调节控制对象1
+{
+    //obj = ui->comboBox->currentIndex();
+    //qDebug()<<"control target is :"<<obj;
+
+    int u = 10;
+
+    QByteArray data2send = QByteArray::number(u,16);
+
+    //QByteArray id=QByteArray::fromHex("00");
+
+    int id = 5;
+
+    QByteArray  msg = msg_processor->packer(data2send,id);
+
+    //client->SendMsg(msg);
+    emit send_signal(msg);  //发送信号
+}
+
+
+
 
 
 void Widget::send_compute_res(double res, int h ,int id)  //发送计算后的uk
@@ -194,6 +226,16 @@ void Widget::read_input(double y, int id)  //读取输入框数
     }
 }
 
+ void Widget::read_input2(double y, int id)
+ {
+     double input = ui->spinBox_2->text().toDouble();
+     emit get_input2(input,y,id);
+
+ }
+
+
+
+
 
 void Widget::SlotReadData(const QByteArray &data)
 {
@@ -228,26 +270,28 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 
     if(index==1)
     {
-        if(target==index)
-        {
-            qDebug()<<"got yk0";
-            emit read_new(real_yk);
-            y_current = real_yk;
-        }
+         qDebug()<<"got yk0";
+
+         emit read_new(real_yk);
+
+         y_current = real_yk;
+
+         emit read_signal(real_yk,index);
+
     }
     if(index ==4)
     {
-        if(target==index)
-        {
-            qDebug()<<"got yk1";
-            emit read_new2(real_yk);
-            y_current2 = real_yk;
-        }
+        qDebug()<<"got yk1";
+
+        emit read_new2(real_yk);
+
+        y_current2 = real_yk;
+
+        emit read_signal2(real_yk,index);
+
     }
     qDebug()<<"target"<<obj;
     //发送信号，准备读取文本框
-
-    emit read_signal(real_yk,index);
 
 }
 
@@ -257,6 +301,7 @@ void Widget::timerEvent(QTimerEvent *event)
 {
     Q_UNUSED(event);
     ui->height->setText(QString::number(y_current, 10, 4));
+    ui->height2->setText(QString::number(y_current2, 10, 4));
     this->update();
 }
 
@@ -337,17 +382,22 @@ void Widget::painttank(double yk, int pointx, int tunky, int width, int height)
     painter.drawPath(wave);      //绘制出图形
 }
 
-void Widget::on_sendmsg_2_clicked()
+void Widget::on_sendmsg_2_clicked() //停止调节
 {
     int id;
-    if(obj==0)
-    {
-        id = 6;
-    }
-    if(obj==1)
-    {
-        id =7;
-    }
+    id =6 ;
+    int u = 10;
+
+    QByteArray data2send = QByteArray::number(u,16);
+
+    QByteArray  msg = msg_processor->packer(data2send,id);
+
+    emit send_signal(msg);
+}
+
+void Widget::on_sendmsg_3_clicked()
+{
+    int id = 7;
     int u = 10;
 
     QByteArray data2send = QByteArray::number(u,16);
