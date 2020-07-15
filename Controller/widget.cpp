@@ -154,14 +154,10 @@ void Widget::on_sendmsg_clicked()     //启动发送
 
 void Widget::on_pushButton_clicked()  //调节控制对象1
 {
-    //obj = ui->comboBox->currentIndex();
-    //qDebug()<<"control target is :"<<obj;
 
     int u = 10;
 
     QByteArray data2send = QByteArray::number(u,16);
-
-    //QByteArray id=QByteArray::fromHex("00");
 
     int id = 5;
 
@@ -215,15 +211,8 @@ void Widget::read_input(double y, int id)  //读取输入框数
 {
     //double input = ui->lineEdit->text().toDouble();
     double input = ui->spinBox->text().toDouble();
+    emit get_input(input,y,id);
 
-    if(id == 1)    //若控制对象为0，则发送至1对应的model
-    {
-        emit get_input(input,y,id);
-    }
-    if(id == 4)
-    {
-        emit get_input2(input,y,id);
-    }
 }
 
  void Widget::read_input2(double y, int id)
@@ -233,7 +222,14 @@ void Widget::read_input(double y, int id)  //读取输入框数
 
  }
 
-
+ //    if(id == 1)    //若控制对象为0，则发送至1对应的model
+ //    {
+ //        emit get_input(input,y,id);
+ //    }
+ //    if(id == 4)
+ //    {
+ //        emit get_input2(input,y,id);
+ //    }
 
 
 
@@ -267,7 +263,6 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
     qDebug()<<"real_yk is :"<< real_yk;
 
 
-
     if(index==1)
     {
          qDebug()<<"got yk0";
@@ -292,7 +287,6 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
     }
     qDebug()<<"target"<<obj;
     //发送信号，准备读取文本框
-
 }
 
 
@@ -383,7 +377,9 @@ void Widget::painttank(double yk, int pointx, int tunky, int width, int height)
 }
 
 void Widget::on_sendmsg_2_clicked() //停止调节
+//0x03对应id=6  0x13对应id =7
 {
+
     int id;
     id =6 ;
     int u = 10;
