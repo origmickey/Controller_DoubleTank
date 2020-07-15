@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>811</width>
+    <height>558</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -16,8 +16,8 @@
   <widget class="QPushButton" name="connectserver">
    <property name="geometry">
     <rect>
-     <x>40</x>
-     <y>80</y>
+     <x>50</x>
+     <y>60</y>
      <width>93</width>
      <height>28</height>
     </rect>
@@ -35,8 +35,8 @@
   <widget class="QPushButton" name="sendmsg">
    <property name="geometry">
     <rect>
-     <x>170</x>
-     <y>80</y>
+     <x>180</x>
+     <y>60</y>
      <width>91</width>
      <height>31</height>
     </rect>
@@ -48,14 +48,14 @@
     </size>
    </property>
    <property name="text">
-    <string>发送数据</string>
+    <string>开始调节</string>
    </property>
   </widget>
   <widget class="QChartView" name="widget" native="true">
    <property name="geometry">
     <rect>
-     <x>320</x>
-     <y>160</y>
+     <x>330</x>
+     <y>140</y>
      <width>461</width>
      <height>371</height>
     </rect>
@@ -64,8 +64,8 @@
   <widget class="QSlider" name="verticalSlider">
    <property name="geometry">
     <rect>
-     <x>260</x>
-     <y>320</y>
+     <x>270</x>
+     <y>300</y>
      <width>22</width>
      <height>171</height>
     </rect>
@@ -77,8 +77,8 @@
   <widget class="QSpinBox" name="spinBox">
    <property name="geometry">
     <rect>
-     <x>250</x>
-     <y>260</y>
+     <x>260</x>
+     <y>220</y>
      <width>42</width>
      <height>22</height>
     </rect>
@@ -87,8 +87,8 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>560</x>
-     <y>90</y>
+     <x>570</x>
+     <y>70</y>
      <width>111</width>
      <height>61</height>
     </rect>
@@ -100,8 +100,8 @@
   <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
-     <x>430</x>
-     <y>80</y>
+     <x>440</x>
+     <y>60</y>
      <width>91</width>
      <height>31</height>
     </rect>
@@ -126,8 +126,8 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>440</x>
-     <y>60</y>
+     <x>450</x>
+     <y>40</y>
      <width>63</width>
      <height>13</height>
     </rect>
@@ -140,7 +140,7 @@
    <property name="geometry">
     <rect>
      <x>60</x>
-     <y>520</y>
+     <y>510</y>
      <width>63</width>
      <height>13</height>
     </rect>
@@ -153,7 +153,7 @@
    <property name="geometry">
     <rect>
      <x>170</x>
-     <y>520</y>
+     <y>510</y>
      <width>63</width>
      <height>13</height>
     </rect>
@@ -165,8 +165,8 @@
   <widget class="QLabel" name="height">
    <property name="geometry">
     <rect>
-     <x>660</x>
-     <y>110</y>
+     <x>670</x>
+     <y>90</y>
      <width>63</width>
      <height>16</height>
     </rect>
@@ -178,8 +178,8 @@
   <widget class="QPushButton" name="sendmsg_2">
    <property name="geometry">
     <rect>
-     <x>300</x>
-     <y>80</y>
+     <x>310</x>
+     <y>60</y>
      <width>91</width>
      <height>31</height>
     </rect>
@@ -191,7 +191,7 @@
     </size>
    </property>
    <property name="text">
-    <string>停止发送</string>
+    <string>停止调节</string>
    </property>
   </widget>
  </widget>

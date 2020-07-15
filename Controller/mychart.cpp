@@ -7,7 +7,7 @@ Mychart::Mychart(QChart *parent) : QChart(parent)
 
     this->legend()->hide();
     this->createDefaultAxes();
-    this->setTitle("水槽控制曲线");
+    this->setTitle("当前水槽控制曲线");
 
     axisX = new QValueAxis;
     axisX->setRange(0,700);
