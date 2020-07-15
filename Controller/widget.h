@@ -60,6 +60,8 @@ private slots:
 
     //void on_verticalSlider_valueChanged(int value);
 
+    void on_sendmsg_2_clicked();
+
 signals:
     void get_input(double,double,int);
     void get_input2(double,double,int);
@@ -92,7 +94,7 @@ private:
     double m_offset;
     int obj;  //被控对象
     int id_tcp ;
-
+    int  on;  //发送开关
 
 protected:
 

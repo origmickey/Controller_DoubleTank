@@ -17,7 +17,7 @@ Mychart::Mychart(QChart *parent) : QChart(parent)
     this->setAxisX(axisX);
 
     axisY = new QValueAxis;
-    axisY->setRange(0,50);
+    axisY->setRange(0,60);
     axisY->setTickCount(5);
     axisY->setLabelFormat("%.2f");
     axisY->setTitleText("液面高度");

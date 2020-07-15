@@ -109,6 +109,8 @@ void Widget::on_connectserver_clicked()
 
 void Widget::on_sendmsg_clicked()     //启动发送
 {
+    on = 1; //发送允许
+
     obj = ui->comboBox->currentIndex();
     qDebug()<<"control target is :"<<obj;
 
@@ -135,14 +137,17 @@ void Widget::on_sendmsg_clicked()     //启动发送
 void Widget::send_compute_res(double res, int h ,int id)  //发送计算后的uk
 //res为计算结果
 {
+   if(on ==1)
+   {
+       h_current = h;
+       int u = res*1000;
+       QByteArray data2send = QByteArray::number(u,16);
+       //QByteArray id = QByteArray::fromHex("00");
+       id = id-1;
+       QByteArray msg = msg_processor->packer(data2send,id);
+       emit send_signal(msg);
+   }
 
-   h_current = h;
-   int u = res*1000;
-   QByteArray data2send = QByteArray::number(u,16);
-   //QByteArray id = QByteArray::fromHex("00");
-   id = id-1;
-   QByteArray msg = msg_processor->packer(data2send,id);
-   emit send_signal(msg);
 }
 
 
@@ -194,7 +199,7 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 {
 
     int index = msg_processor->id_list.indexOf(id);
-
+    int target = obj*3+1;
     //id_tcp = id;
 
     qDebug()<<"proccessed_data is : "<<proccessed_data;
@@ -214,13 +219,19 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 
     if(index==1)
     {
-        qDebug()<<"got yk0";
-        emit read_new(y_current);
+        if(target==index)
+        {
+            qDebug()<<"got yk0";
+            emit read_new(y_current);
+        }
     }
     if(index ==4)
     {
-        qDebug()<<"got yk1";
-         emit read_new2(y_current);
+        if(target==index)
+        {
+            qDebug()<<"got yk1";
+             emit read_new2(y_current);
+        }
     }
     qDebug()<<"target"<<obj;
     //发送信号，准备读取文本框
@@ -291,4 +302,9 @@ void Widget::painttank(double yk, int pointx, int tunky, int width, int height)
     wave.lineTo(width, height); //右下角，坐标（width, height），移动到右下角结束点,整体形成一个闭合路径
     painter.setBrush(Qt::darkBlue); //填充绿色
     painter.drawPath(wave);      //绘制出图形
+}
+
+void Widget::on_sendmsg_2_clicked()
+{
+    on = 0;
 }

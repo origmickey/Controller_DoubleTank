@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="connectserver">
    <property name="geometry">
     <rect>
-     <x>60</x>
+     <x>40</x>
      <y>80</y>
      <width>93</width>
      <height>28</height>
@@ -29,13 +29,13 @@
     </size>
    </property>
    <property name="text">
-    <string>connect</string>
+    <string>连接</string>
    </property>
   </widget>
   <widget class="QPushButton" name="sendmsg">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>170</x>
      <y>80</y>
      <width>91</width>
      <height>31</height>
@@ -48,7 +48,7 @@
     </size>
    </property>
    <property name="text">
-    <string>sendmsg</string>
+    <string>发送数据</string>
    </property>
   </widget>
   <widget class="QChartView" name="widget" native="true">
@@ -100,7 +100,7 @@
   <widget class="QComboBox" name="comboBox">
    <property name="geometry">
     <rect>
-     <x>370</x>
+     <x>430</x>
      <y>80</y>
      <width>91</width>
      <height>31</height>
@@ -126,8 +126,8 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>380</x>
-     <y>50</y>
+     <x>440</x>
+     <y>60</y>
      <width>63</width>
      <height>13</height>
     </rect>
@@ -173,6 +173,25 @@
    </property>
    <property name="text">
     <string>TextLabel</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="sendmsg_2">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>80</y>
+     <width>91</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="minimumSize">
+    <size>
+     <width>91</width>
+     <height>31</height>
+    </size>
+   </property>
+   <property name="text">
+    <string>停止发送</string>
    </property>
   </widget>
  </widget>
