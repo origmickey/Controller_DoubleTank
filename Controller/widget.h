@@ -89,9 +89,12 @@ private:
     model Model2;
 
     QTimer *pTimer1;
-    double y_current; //当前液面高度
-    double y_current2;
+
+    double y_current; //对象0当前液面高度
+    double y_current2;//对象1当前液面高度
     double h_current;
+    double h_current2;
+
     double m_offset;
     int obj;  //被控对象
     int id_tcp ;

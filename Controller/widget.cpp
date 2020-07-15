@@ -146,16 +146,23 @@ void Widget::on_sendmsg_clicked()     //启动发送
 void Widget::send_compute_res(double res, int h ,int id)  //发送计算后的uk
 //res为计算结果
 {
-   if(on ==1)
-   {
-       h_current = h;
-       int u = res*1000;
-       QByteArray data2send = QByteArray::number(u,16);
+
+
+    if(id==1)
+    {
+        h_current=h;
+    }
+    if(id==4)
+    {
+        h_current2=h;
+    }
+    int u = res*1000;
+    QByteArray data2send = QByteArray::number(u,16);
        //QByteArray id = QByteArray::fromHex("00");
-       id = id-1;
-       QByteArray msg = msg_processor->packer(data2send,id);
-       emit send_signal(msg);
-   }
+    id = id-1;
+    QByteArray msg = msg_processor->packer(data2send,id);
+    emit send_signal(msg);
+
 }
 
 
@@ -217,14 +224,15 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
 
     qDebug()<<"real_yk is :"<< real_yk;
 
-    y_current = real_yk;
+
 
     if(index==1)
     {
         if(target==index)
         {
             qDebug()<<"got yk0";
-            emit read_new(y_current);
+            emit read_new(real_yk);
+            y_current = real_yk;
         }
     }
     if(index ==4)
@@ -232,12 +240,15 @@ void Widget::GetValidData(QByteArray id, QByteArray proccessed_data)
         if(target==index)
         {
             qDebug()<<"got yk1";
-             emit read_new2(y_current);
+            emit read_new2(real_yk);
+            y_current2 = real_yk;
         }
     }
     qDebug()<<"target"<<obj;
     //发送信号，准备读取文本框
-    emit read_signal(y_current,index);
+
+    emit read_signal(real_yk,index);
+
 }
 
 
@@ -276,6 +287,30 @@ void Widget::paintEvent(QPaintEvent *event)
 
     painttank(h1*6,60,150,110,500);
     painttank(h2*6,170,150,220,500);
+
+    double h3;
+    double h4;
+    h3 = h_current2;
+    h4 = y_current2;
+    if(h_current2<0)
+    {
+        h3 = 0;
+    }
+    if(h_current2>350/6)
+    {
+        h3 = 350/6;
+    }
+    if(y_current2<0)
+    {
+        h4 = 0;
+    }
+    if(y_current2>350/6)
+    {
+        h4 = 350/6;
+    }
+
+    painttank(h3*6,830,150,880,500);
+    painttank(h4*6,920,150,970,500);
 }
 
 
